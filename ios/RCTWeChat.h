@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+
 #import <React/RCTBridgeModule.h>
 #import "WXApi.h"
 
@@ -21,12 +22,17 @@
 #define RCTWXShareTypeVideo @"video"
 #define RCTWXShareTypeAudio @"audio"
 #define RCTWXShareTypeFile @"file"
+#define RCTWXShareTypeMiniProgram @"miniProgram"
 
 #define RCTWXShareType @"type"
 #define RCTWXShareTitle @"title"
 #define RCTWXShareDescription @"description"
 #define RCTWXShareWebpageUrl @"webpageUrl"
 #define RCTWXShareImageUrl @"imageUrl"
+#define RCTWXShareUserName @"userName"
+#define RCTWXSharePath @"path"
+#define RCTWXShareWithShareTicket @"withShareTicket"
+#define RCTWXShareProgramType @"programType"
 
 #define RCTWXEventName @"WeChat_Resp"
 
