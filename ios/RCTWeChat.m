@@ -55,6 +55,10 @@ RCT_EXPORT_MODULE()
     return dispatch_get_main_queue();
 }
 
++ (BOOL)requiresMainQueueSetup {
+    return YES;
+}
+
 RCT_EXPORT_METHOD(registerApp:(NSString *)appid
                   :(RCTResponseSenderBlock)callback)
 {
@@ -66,7 +70,7 @@ RCT_EXPORT_METHOD(registerAppWithDescription:(NSString *)appid
                   :(NSString *)appdesc
                   :(RCTResponseSenderBlock)callback)
 {
-    callback(@[[WXApi registerApp:appid withDescription:appdesc] ? [NSNull null] : INVOKE_FAILED]);
+    callback(@[[WXApi registerApp:appid] ? [NSNull null] : INVOKE_FAILED]);
 }
 
 RCT_EXPORT_METHOD(isWXAppInstalled:(RCTResponseSenderBlock)callback)
@@ -148,6 +152,12 @@ RCT_EXPORT_METHOD(shareToSession:(NSDictionary *)data
                   :(RCTResponseSenderBlock)callback)
 {
     [self shareToWeixinWithData:data scene:WXSceneSession callback:callback];
+}
+
+RCT_EXPORT_METHOD(shareToFavorite:(NSDictionary *)data
+                  :(RCTResponseSenderBlock)callback)
+{
+    [self shareToWeixinWithData:data scene:WXSceneFavorite callback:callback];
 }
 
 RCT_EXPORT_METHOD(pay:(NSDictionary *)data
@@ -275,6 +285,50 @@ RCT_EXPORT_METHOD(pay:(NSDictionary *)data
                                        MediaTag:mediaTagName
                                        callBack:callback];
 
+        } else if ([type isEqualToString:RCTWXShareTypeMiniProgram]) {
+            NSString * webpageUrl = aData[RCTWXShareWebpageUrl];
+            if (webpageUrl.length <= 0) {
+                callback(@[@"webpageUrl required"]);
+                return;
+            }
+            
+            NSString * userName = aData[RCTWXShareUserName];
+            if (userName.length <= 0) {
+                callback(@[@"userName required"]);
+                return;
+            }
+            
+            NSString * path = aData[RCTWXSharePath];
+            if (path.length <= 0) {
+                callback(@[@"path required"]);
+                return;
+            }
+            NSNumber *withShareTicket = aData[RCTWXShareWithShareTicket];
+            NSNumber *programType = aData[RCTWXShareProgramType];
+            NSURL *url = [NSURL URLWithString:aData[RCTWXShareImageUrl]];
+            NSURLRequest *imageRequest = [NSURLRequest requestWithURL:url];
+            [self.bridge.imageLoader loadImageWithURLRequest:imageRequest callback:^(NSError *error, UIImage *image) {
+                if (image == nil){
+                    callback(@[@"fail to load image resource"]);
+                } else {
+                    WXMiniProgramObject *ext = [WXMiniProgramObject object];
+                    ext.webpageUrl = webpageUrl;
+                    ext.userName = userName;
+                    ext.path = path;
+                    ext.withShareTicket = withShareTicket.boolValue;
+                    ext.miniProgramType = programType.integerValue;
+                    ext.hdImageData = UIImagePNGRepresentation(image);
+                    [self shareToWeixinWithMediaMessage:aScene
+                                                  Title:title
+                                            Description:description
+                                                 Object:ext
+                                             MessageExt:messageExt
+                                          MessageAction:messageAction
+                                             ThumbImage:aThumbImage
+                                               MediaTag:mediaTagName
+                                               callBack:callback];
+                }
+            }];
         } else {
             callback(@[@"message type unsupported"]);
         }

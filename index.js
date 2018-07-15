@@ -196,13 +196,18 @@ export function shareToTimeline(data) {
  * @method shareToSession
  * @param {Object} data
  * @param {String} data.thumbImage - Thumb image of the message, which can be a uri or a resource id.
- * @param {String} data.type - Type of this message. Could be {news|text|imageUrl|imageFile|imageResource|video|audio|file}
+ * @param {String} data.type - Type of this message. Could be {news|text|imageUrl|imageFile|imageResource|video|audio|file|miniProgram}
  * @param {String} data.webpageUrl - Required if type equals news. The webpage link to share.
  * @param {String} data.imageUrl - Provide a remote image if type equals image.
  * @param {String} data.videoUrl - Provide a remote video if type equals video.
  * @param {String} data.musicUrl - Provide a remote music if type equals audio.
  * @param {String} data.filePath - Provide a local file if type equals file.
  * @param {String} data.fileExtension - Provide the file type if type equals file.
+ * @param {String} data.path - Provide the path if type equals miniProgram.
+ * @param {String} data.userName - Provide the username if type equals miniProgram.
+ * @param {String} data.description - Provide the username if type equals miniProgram.
+ * @param {String} data.withShareTicket - Provide the withShareTicket if type equals miniProgram.
+ * @param {String} data.programType - Provide the programType if type equals miniProgram. Could be {0|1|2}.
  */
 export function shareToSession(data) {
   return new Promise((resolve, reject) => {

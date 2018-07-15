@@ -2,3 +2,6 @@
 node_modules
 /android/build
 /android/RCTWeChat.iml
+.DS_Store
+*.xcuserdatad
+/android/react-native-wechat-xun.iml
